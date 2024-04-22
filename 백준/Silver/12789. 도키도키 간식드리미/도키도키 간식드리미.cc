@@ -12,50 +12,20 @@ int main() {
     int n;
     cin >> n;
 
-    queue<int> A;
-    // priority_queue<int> R; // 우선순위큐는 높은순에서 낮은 순으로 정렬해준다.
-    priority_queue<int, vector<int>, greater<int> > R;
+    int cnt=1;
     stack<int> O;
-    for (int i = 0; i < n; i++) {
-        int x;
-        cin >> x;
-        A.push(x);
-        R.push(x);
+    while(n--) {
+        int T; cin >>T;
+        if(T == cnt) cnt++; // 현재 순번과 일치한다면 보내주기
+        else O.push(T); // 아니면 스택에서 기다리기
+
+        while(!O.empty() && O.top() == cnt) {
+            O.pop();// 스택 맨 위가 현재 순번과 일치한다면 보내주기
+            cnt++;
+        }
     }
 
-    while(!R.empty()) {
-        int flag = 3; // 수행된 부분이 있으면 즉 R이 빠져가나는 부분이 있으면 1로 변경해준다.
+    if(O.empty()) cout<< "Nice";
+    else cout <<"Sad";
 
-        if(!A.empty()) {
-            while(A.front() !=R.top()) {
-                int x =A.front();
-                O.push(x);
-                A.pop();
-                flag =1;
-                if(A.empty()) break;
-            }
-
-            if(!A.empty()&& A.front() == R.top()) {
-                flag =1;
-                A.pop();
-                R.pop();
-            }
-        }
-
-        if(!O.empty()) {
-            while(R.top() ==O.top()) {
-                O.pop();
-                R.pop();
-                flag =1;
-                if(O.empty()) break;
-            }
-        }
-
-        if(flag ==3) {
-            cout << "Sad" ; return 0;
-        }
-
-    }
-    cout << "Nice";
-    return 0;
 }

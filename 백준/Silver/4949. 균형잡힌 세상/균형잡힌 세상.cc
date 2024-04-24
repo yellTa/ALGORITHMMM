@@ -13,37 +13,33 @@ int main() {
     while(1) {
         string s; getline(cin,s);
         stack<char> st;
+        bool flag = true;
+        if(s[0] =='.') break;
 
-        if(s[0] =='.') {
-            break;
-        }
-
-        for(int i=0; i<s.size(); i++) {
-            if(s[i] == '(') {
-                st.push(s[i]);
-            }else if(s[i] == '[') {
-                st.push(s[i]);
+        for(auto c: s) {
+            if(c == '(' || c== '[') {
+                st.push(c);
+            }else if(c ==')') {
+                if(st.empty() || st.top() !='(') {
+                    flag =false;
+                    break;
+                }
+                st.pop();
+            }else if(c == ']') {
+                if(st.empty() || st.top() !='[') {
+                    flag =false;
+                    break;
+                }
+                st.pop();
             }
-
-            if(s[i] == ')') {
-                if( !st.empty() && st.top() == '(') {
-                    st.pop();
-                }else st.push(s[i]);
-            }else if(s[i] == ']') {
-                if(!st.empty() && st.top() == '[') {
-                    st.pop();
-                }else st.push(s[i]);
-            }
-
-        }
-        
-        if(st.size() ==0) {
-            answer += "yes \n";
-        }else {
-            answer +="no \n";
         }
 
+        if(!st.empty()) flag = false;
 
+        if(flag) cout << "yes \n";
+        else cout << "no \n";
     }
+
+
     cout << answer;
 }

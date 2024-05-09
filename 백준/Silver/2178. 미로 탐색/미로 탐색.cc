@@ -1,51 +1,51 @@
-#include <stack>
-#include <iostream>
 #include <queue>
-#include <algorithm>
+#include <iostream>
+
+#define X first
+#define Y second
 
 using namespace std;
 
-int maze[101][101];
+int board[101][101];
 int vis[101][101];
-int dx[]= {1, -1, 0 ,0};
+
+int dx[] = {1,-1,0,0};
 int dy[] = {0,0,-1,1};
-
-
 int main() {
     std::ios::sync_with_stdio(0);
     std::cin.tie(0);
 
     int n,m; cin >>n>>m;
 
-    for(int i=1; i<=n; i++){
-        string s; cin >> s;
+    for(int i=1; i<=n; i++) {
+        string s; cin >>s;
         for(int k=1; k<=m; k++) {
-             maze[i][k]= s[k-1]-'0';
+            board[i][0] = 0;
+            board[i][k] =s[k-1] -'0';
         }
     }
 
-    queue<pair<int, int>> q;
-    q.push({1,1});
+    //bfs 초기작업
     vis[1][1] = 1;
+    queue<pair<int,int>> q;
+    q.push({1,1});
 
-    int cnt=1;
     while(!q.empty()) {
-        pair<int,int> temp = q.front();
-        q.pop();
-        // cout << temp.first<< ","<< temp.second<< ": "<< vis[temp.first][temp.second]<<"\n";
-        cnt = vis[temp.first][temp.second];
-        for(int i=0; i< 4; i++) {
-            int x = temp.first + dx[i];
-            int y = temp.second + dy[i];
+        auto cur = q.front(); q.pop();
 
-            if(x<1 || y<1 || x>n || y>m) continue;
-            if(vis[x][y] || maze[x][y]==0)continue;
-                vis[x][y] =cnt+1;
-                q.push({x,y});
+        for(int i=0; i<4; i++) {
+            int nx = cur.X + dx[i];
+            int ny = cur.Y +dy[i];
 
+            if(nx <1 || nx>n || ny <1 || ny>m)continue;
+            if(board[nx][ny] ==0 || vis[nx][ny])continue;
+
+            if(nx == n && ny ==m) {
+                cout << vis[cur.X][cur.Y]+1;
+                return 0;
+            }
+            q.push({nx,ny});
+            vis[nx][ny] =vis[cur.X][cur.Y]+1;
         }
     }
-    cout << vis[n][m];
-
 }
-

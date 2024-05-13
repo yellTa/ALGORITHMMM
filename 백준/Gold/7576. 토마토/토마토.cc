@@ -1,62 +1,78 @@
-#include <stack>
-#include <iostream>
 #include <queue>
-#include <algorithm>
+#include <cmath>
+#include <iostream>
+
+#define X first
+#define Y second
 
 using namespace std;
 
-int dx[]= {1, -1, 0 ,0};
-int dy[] = {0,0,-1,1};
+int board[1001][1001];
+int vis[1001][1001];
 
+int dx[4] = {1,-1,0,0};
+int dy[4] = {0,0,1,-1};
 
 int main() {
     std::ios::sync_with_stdio(0);
     std::cin.tie(0);
 
+    int m,n; cin >> m >>n;
 
-    int m,n; cin >>m>>n;
-
-    int tomato[n][m]={};
-
-    queue<pair<int, int>> q;
-
+    queue<pair<int,int>> q;
+    bool flag = false;
     for(int i=0; i<n; i++) {
         for(int k=0; k<m; k++) {
-            string s;cin >>s;
-            tomato[i][k] = stoi(s);
-            if(s == "1")q.push({i,k});
+            int x; cin >>x;
+            if(!x) {
+                board[i][k] =0;
+                vis[i][k]=0;
+                flag = true;
+                continue;
+            }
+
+            if(x==1) {
+                q.push({i,k});
+                board[i][k] =1;
+                vis[i][k] =1;
+                continue;
+            }
+            if(x== -1) {
+                board[i][k] = -1;
+                vis[i][k] = -1;
+            }
+
         }
     }
 
     while(!q.empty()) {
-        pair<int,int> temp = q.front();
-        int cnt = tomato[temp.first][temp.second];
-        q.pop();
+        auto cur = q.front(); q.pop();
 
         for(int i=0; i<4; i++) {
-            int x = temp.first + dx[i];
-            int y = temp.second + dy[i];
+            int nx = cur.X + dx[i];
+            int ny = cur.Y + dy[i];
 
-            if( x<0 || y<0 ||x >=n || y>=m )continue;
-            if(tomato[x][y] == -1) continue;
-            if(tomato[x][y] !=0) continue;
-            tomato[x][y] = cnt+1;
-            q.push({x,y});
+            if(nx <0 || nx>=n || ny <0 || ny>=m)continue;
+            if(vis[nx][ny] || vis[nx][ny] ==-1)continue;
+            q.push({nx,ny});
+            vis[nx][ny] = vis[cur.X][cur.Y]+1;
         }
-
+    }
+    if(!flag) {
+        cout << 0;
+        return 0;
     }
 
-    int max=0;
+    int max =0;
     for(int i=0; i<n; i++) {
         for(int k=0; k<m; k++) {
-            if(tomato[i][k] ==0) {
+            if(max < vis[i][k])max = vis[i][k];
+            if(vis[i][k]==0) {
                 cout << -1;
                 return 0;
             }
-            if(tomato[i][k] > max) max = tomato[i][k];
         }
-
     }
-    cout << max -1;
-}
+    cout << max-1;
 
+}

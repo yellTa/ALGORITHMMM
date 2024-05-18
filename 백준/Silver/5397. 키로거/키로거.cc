@@ -1,9 +1,6 @@
-#include <queue>
-#include <cmath>
+
 #include <iostream>
-#include <algorithm>
 #include <list>
-#include <vector>
 /*
 *[문제의 조건]
 * 입력: 알파벳 대소문자, 숫저 - (backsapce), 화살표 <<>>
@@ -35,37 +32,29 @@ using namespace std;
 
 int t;
 string s;
-int main()
-{
+
+int main() {
     cin >> t;
 
-    while (t--)
-    {
+    while (t--) {
         list<char> l;
-        list<char>::iterator it = l.end();
+        list<char>::iterator it = l.begin();
+        // list<char>::iterator it = l.begin();
 
         cin >> s;
 
-        for (char str : s)
-        {
-            if (str == '<')
-            {
+        for (char str: s) {
+            if (str == '<') {
                 if (it != l.begin()) it--;
-            }
-            else if (str == '>')
-            {
+            } else if (str == '>') {
                 if (it != l.end()) it++;
-            }
-            else if (str == '-')
-            {
+            } else if (str == '-') {
                 if (it != l.begin()) l.erase(prev(it));
-            }
-            else
+            } else
                 l.insert(it, str);
         }
 
-        for (char str : l)
-        {
+        for (char str: l) {
             cout << str;
         }
         cout << '\n';

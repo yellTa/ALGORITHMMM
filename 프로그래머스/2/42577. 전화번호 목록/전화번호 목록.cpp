@@ -40,33 +40,22 @@ using namespace std;
  *
  * answer출력
  */
-
-/*
-효율문제를 해결하기 위한 방안
-1. phone_book을 사전순으로 정리한 후 인접한 인덱스끼리만 검사
-위의 방법은 phone_book의 요소가 int가 아닌 string이라서 가능하다.O(n)에 끝낼 수 있다.
-
-2. hash를 사용하는 방법
-
-*/
 bool solution(vector<string> phone_book) {
     std::ios::sync_with_stdio(0);
     std::cin.tie(0);
     
     bool answer = true;
-    unordered_map<string ,int> hash_map;
     
-    for(int i=0; i< phone_book.size(); i++){
-        hash_map[phone_book[i]] =1; // key를 String으로 두었다.
+    sort(phone_book.begin(), phone_book.end());
+    for(int i=0; i<phone_book.size(); i++){
+        string A = phone_book[i];
         
-    }
-    
-    for(int i=0; i< phone_book.size(); i++){
-        string phone_number = "";
-        for(int j=0; j< phone_book[i].size(); j++){
-            phone_number += phone_book[i][j];
-            if(hash_map[phone_number] && phone_number != phone_book[i])//phone_number != phone_book은 동일한 컨텐츠를 제외해야하므로 
-                return false;
+        for(int k= i+1; k<phone_book.size(); k++){
+            string B = phone_book[k];
+            
+            if(A == B.substr(0,A.size())){
+                cout << false; return 0;
+            }
         }
     }
     

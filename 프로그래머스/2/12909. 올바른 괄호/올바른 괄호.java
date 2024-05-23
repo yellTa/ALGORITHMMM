@@ -2,6 +2,7 @@ import java.util.*;
 import java.io.*;
 
 /*
+스택으로 풀어도 되지만 어짜피 주어지는 괄호의 쌍이 한 개만 존재해서 수리로 풀음
 ( =1
 ) = -1
 
@@ -18,18 +19,24 @@ class Solution {
         boolean answer = true;
         
         String A[] = s.split("");
+        
         int result =0;
+        
         for(String x : A){
-            if(x.equals("(") )result +=1;
-            else if(x.equals(")")){
-                
+            if(x.equals("(") ){
+             result +=1;
+             continue;
+            }
+            
+            if(x.equals(")")){
                 if(result==0){
                     return false;
                 }
-                result -=1;
             }
+            result -=1;
         }
-        if(result ==0)return true;
+        
+        if(result==0)return true;
         else return false;
         
     }

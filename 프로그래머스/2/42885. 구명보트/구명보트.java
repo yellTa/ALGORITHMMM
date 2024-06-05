@@ -21,21 +21,25 @@ class Solution {
             
         Arrays.sort(p);
         
-        int right = p.length-1;
-        int left=0;
+        int j = p.length-1;
+        int i=0;
         
-        while(right>=left){
-            if(p[right] + p[left]<=limit){
-                answer++;
-                right--;
-                left++;
+        while(true){
+            
+             if(p[i] + p[j] > limit){
+                answer ++;
+                j--;
+                if(j==0|| j==i)return answer +1;
                 continue;
             }
-            answer++;
-            right--;
+            
+             if(p[i] + p[j]<=limit){
+                if(i==j || j-i==1|| j==0)return answer+1;
+                i++; j--;
+                answer++;
+            }
             
         }
-            return answer;
+        
     }
-
 }

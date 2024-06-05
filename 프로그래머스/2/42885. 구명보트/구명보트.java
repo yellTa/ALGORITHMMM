@@ -17,30 +17,25 @@ class Solution {
     public int solution(int[] p, int limit) {
         int answer = 0;
     
-        if(p.length ==1)return 1;
+        if(p.length ==1)return 1;    
             
         Arrays.sort(p);
         
-        int j = p.length-1;
-        int i=0;
+        int right = p.length-1;
+        int left=0;
         
-        while(true){
-            
-             if(p[i] + p[j] > limit){
-                answer ++;
-                j--;
-                 
-                if(j==0|| j==i)return answer +1;
+        while(right>=left){
+            if(p[right] + p[left]<=limit){
+                answer++;
+                right--;
+                left++;
                 continue;
             }
-            
-             if(p[i] + p[j]<=limit){
-                if(i==j || j-i==1|| j==0)return answer+1;
-                i++; j--;
-                answer++;
-            }
+            answer++;
+            right--;
             
         }
-        
+            return answer;
     }
+
 }

@@ -45,7 +45,7 @@ int main() {
         }
     }
 
-    for(int rain= min; rain <=max; rain++) {
+    for(int rain= 0; rain <=max; rain++) {
         //flood 초기화
         for(int i=0; i<n; i++) {
             fill(flood[i], flood[i] +n, 0);
@@ -103,6 +103,6 @@ int main() {
     }
 
     sort(partition.begin(),partition.end());
-    if(partition.size()>=1) cout<< partition[partition.size()-1];
-    else cout << 1;
+
+    cout<< partition[partition.size()-1];
 }

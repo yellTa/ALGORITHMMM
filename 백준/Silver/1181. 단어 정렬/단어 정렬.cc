@@ -1,33 +1,30 @@
-#include <iostream>
 #include <algorithm>
-#include <stack>
+#include <iostream>
+#include <set>
+#include <vector>
 
 using namespace std;
-bool cmp(string a, string b) {
-    if(a.length() == b.length()) return a<b; //길이 같으면 사전순
-    else return a.length() < b.length(); //길이 다르면 짧은 것 부터
+
+bool cmp(const string &a, const string &b) {
+    if(a.length() == b.length()) return a<b;
+    return a.length() < b.length();
 }
 
-
-int main(void) {
-    std::ios::sync_with_stdio(0);
+//중복 단어 제거해야됨
+int main() {
+    ios::sync_with_stdio(0);
     std::cin.tie(0);
 
-    //vector에 넣고 sort를 돌리는 방법도 있다.
-    //그럼 문제에서 원하는대로 정렬해줌
-   int n ;cin>>n;
+    int tc; cin >>tc;
 
-    string A[n] = {};
-    for(int i=0; i< n; i++) {
-        cin >> A[i];
+    set<string> store;
+    while(tc--) {
+        string s; cin >>s;
+        store.insert(s);
     }
+    //set to vector
 
-    sort(A, A+n, cmp);
-    for(int i=0; i< n ;i++) {
-        if(i !=0 && A[i] == A[i-1]) {
-            continue;
-        }
-        cout << A[i] <<"\n";
-    }
-
+    vector<string> v(store.begin(), store.end());
+    sort(v.begin(), v.end(), cmp);
+    for(auto word : v) cout << word << "\n";
 }

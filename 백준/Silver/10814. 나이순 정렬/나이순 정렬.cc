@@ -1,31 +1,34 @@
 #include <algorithm>
-#include <queue>
 #include <iostream>
+#include <map>
+#include <set>
+#include <unordered_map>
 #include <vector>
+
 using namespace std;
 
-int cmp(tuple<int, string, int>& a,tuple<int, string, int>& b) {
-    if (get<0>(a) == get<0>(b)) {
-        return get<2>(a) < get<2>(b); // 나이가 같으면 인덱스 순으로
-    }
-    return get<0>(a) < get<0>(b); // 나이 순으로
+#define X first
+#define Y second
+bool cmp(const pair<int, string> &a, const pair<int,string> & b) {
+    return a.X < b.X;
 }
+
+//중복 단어 제거해야됨
 int main() {
     ios::sync_with_stdio(0);
     std::cin.tie(0);
 
-    // priority_queue<int, vector<int>, greater<int>> pq;
-    int t; cin >>t;
+    int tc; cin >> tc;
 
-    vector<tuple<int, string, int>> users; // age, name, index
-    for(int i=0 ; i<t; i++) {
-        int age; cin>> age;
-        string name; cin >> name;
+    vector<pair<int, string>> store;
+    while(tc--) {
+        int age; cin >>age;
+        string name; cin >>name;
 
-        users.push_back({age,name,i});
+        store.push_back({age,name});
     }
-    sort(users.begin(), users.end(),cmp);
-    for (const auto& user : users) {
-        cout << get<0>(user) << " " << get<1>(user) << "\n";
-    }
+
+    stable_sort(store.begin(), store.end(), cmp);
+
+    for(auto cur: store)cout << cur.X << " "<< cur.Y << '\n';
 }

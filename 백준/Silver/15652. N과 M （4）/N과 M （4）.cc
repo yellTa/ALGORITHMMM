@@ -21,11 +21,10 @@ void func(int k) {
     }
 
     int st =1;
-    if(k!=0)st = arr[k-1];
-    //i가 의미하는 것
+    if(k!=0) st= arr[k-1];
     for(int i=st; i<=n; i++) {
-            arr[k] = i;
-            func(k+1);
+        arr[k] =i;
+        func(k+1);
     }
 }
 

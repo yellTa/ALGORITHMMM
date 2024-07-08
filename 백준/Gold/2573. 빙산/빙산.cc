@@ -14,26 +14,25 @@ int dx[4] = {-1, 1, 0, 0};
 int dy[4] = {0, 0, -1, 1};
 
 void melt(int n, int m) {
-    fill(&temp[0][0], &temp[0][0] + 301 * 301, 0);
+    for (int i = 0; i < n; i++) fill(temp[i], temp[i] + m, 0);
+
     for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            if (mountain[i][j] > 0) {
+        for (int k = 0; k < m; k++) {
+            if (mountain[i][k] > 0) {
                 int ice = 0;
+
                 for (int dir = 0; dir < 4; dir++) {
                     int nx = i + dx[dir];
-                    int ny = j + dy[dir];
-                    if (nx >= 0 && ny >= 0 && nx < n && ny < m && mountain[nx][ny] == 0) {
-                        ice++;
-                    }
+                    int ny = k + dy[dir];
+                    if (nx >= 0 && ny >= 0 && nx < n && ny < m && mountain[nx][ny] == 0) ice++;
                 }
-                temp[i][j] = max(0, mountain[i][j] - ice);
+                temp[i][k] = max(0, mountain[i][k] - ice);
             }
         }
     }
+
     for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            mountain[i][j] = temp[i][j];
-        }
+        for (int k = 0; k < m; k++) mountain[i][k] = temp[i][k];
     }
 }
 
@@ -69,17 +68,30 @@ bool isSeparated(int n, int m) {
     return false;
 }
 
+bool hasIce(int n, int m) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (mountain[i][j] > 0) return true;
+        }
+    }
+    return false;
+}
+
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
+
     int n, m;
     cin >> n >> m;
+
     for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            cin >> mountain[i][j];
+        for (int k = 0; k < m; k++) {
+            cin >> mountain[i][k];
         }
     }
+
     int years = 0;
+
     while (true) {
         melt(n, m);
         years++;
@@ -87,16 +99,7 @@ int main() {
             cout << years << endl;
             return 0;
         }
-        bool hasIce = false;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (mountain[i][j] > 0) {
-                    hasIce = true;
-                    break;
-                }
-            }
-        }
-        if (!hasIce) {
+        if (!hasIce(n, m)) {
             cout << 0 << endl;
             return 0;
         }

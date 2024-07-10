@@ -11,7 +11,7 @@ int value[30];
 bool isused[30];
 int arr[30];
 
-int cnt=0;
+int cnt;
 
 void func(int k, int sum) {
     if(k==n) {

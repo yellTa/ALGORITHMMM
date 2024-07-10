@@ -1,61 +1,64 @@
-#include <algorithm>
-#include <queue>
 #include <iostream>
-#include <vector>
+#include <algorithm>
+#include <set>
+
 using namespace std;
 
-int arr[100005];
 int n;
-int state[100005];
+//배열을 저장할 때에는 꼭 범위를 지정해주자
+int wantTeam[1000005];
+int status[1000005];
 
-const int NOT_VISITED = 0;
-const int CYCLE_IN = -1;
 
-
-void run(int x) {
-    int cur =x;
-
+void search(int i) { //i 번째 사람 검사
+    int cur  = i;
+    //i번이 지시하는 사람을 넣는다.
     while(true) {
-        state[cur] =x;
-        cur = arr[cur];
+        status[cur] = i; //시작 사람을 넣는다?
+        cur = wantTeam[cur];
 
-        if(state[cur] == x) {
-            while(state[cur] !=CYCLE_IN) {
-                state[cur] = CYCLE_IN;
-                cur = arr[cur];
+        if(status[cur] ==i) {
+            while(status[cur] !=0) {
+                status[cur] = 0;
+                cur = wantTeam[cur];
             }
             return;
         }
-        else if(state[cur] !=0) return;
+
+        else if(status[cur] !=-1)return;
 
     }
+
 }
 
 int main() {
     ios::sync_with_stdio(0);
-    std::cin.tie(0);
+    cin.tie(0);
 
-    int t;
-    cin>>t;
+    int tc; cin>>tc;
+    while(tc--) {
+        cin>>n;
+        //초기화 작업
+        for(int i=1; i<= n; i++) {
+            cin >> wantTeam[i];
+        }
 
-    while(t--) {
-        cin >>n;
-        fill(state+1, state+n+1, 0);
-        for(int i=1; i<=n; i++) cin >> arr[i];
+        //기본값 -1 -> 검사하지 않은 사람
+        fill(status+1, status+n+1,-1);
 
-        for(int i=1; i<=n; i++) {
-            if(state[i] == NOT_VISITED) run(i);
+        for(int i=1; i<=n ;i++) {
+            if(status[i] == -1) {//검사 수행
+                search(i);
+            }
         }
 
         int cnt=0;
-
         for(int i=1; i<=n; i++) {
-            if(state[i] !=CYCLE_IN) cnt++;
+            if(status[i] !=0)cnt ++;
         }
 
         cout << cnt<< "\n";
-
     }
 
-    return 0;
+
 }

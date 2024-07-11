@@ -1,35 +1,30 @@
-#include <algorithm>
 #include <iostream>
-#include <map>
+#include <algorithm>
 #include <set>
-#include <unordered_map>
-#include <vector>
-#include <climits>
 
 using namespace std;
 
-vector<int> store(21);
+int value[25];
+int a, b;
 
-void reverse(int x, int y) {
-    for(int i=0; i<((y-x+1)/2);  i++) {
-        swap(store[x+i], store[y-i]);
+void swapCard(int a, int b){
+    for(int i=0; i<((b-a)/2) +1; i++) {
+        swap(value[a+i],value[b-i]);
     }
 }
 
 int main() {
     ios::sync_with_stdio(0);
-    std::cin.tie(0);
+    cin.tie(0);
 
-    for(int i=1; i<=20; i++) {
-        store[i] = i;
-    }
+    //int 배열 만들기
+    for(int i=1; i<=20; i++)value[i]=i;
 
     for(int i=0; i<10; i++) {
-        int x,y; cin >> x>>y;
-
-        reverse(x,y);
+        cin >>a; cin >>b;
+        swapCard(a,b);
     }
 
-    for(int i=1; i<21; i++)cout << store[i] << " ";
+    for(int i=1; i<21; i++)cout << value[i]<< " ";
 
 }

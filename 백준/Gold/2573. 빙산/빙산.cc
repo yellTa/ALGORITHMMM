@@ -1,67 +1,70 @@
 #include <iostream>
-#include <vector>
+#include <algorithm>
 #include <queue>
-#include <cstring>
 
 #define X first
 #define Y second
 
 using namespace std;
+int n,m;
+int vis[301][301];
+int mountain[301][301];
+int temp[301][301];
+int portion;
+int years;
 
-int n, m;
-int years = 0;
+int dx[4] = {-1 ,1, 0,0};
+int dy[4] = {0,0,-1,1};
 
-int mountain[300][300];
-int temp[300][300];
-bool vis[300][300];
+bool bfs() {
+    for(int i=0; i<n; i++) {
+        for(int k=0; k<m; k++) {
+            if(mountain[i][k] && !vis[i][k]) {
+                queue<pair<int,int>> q;
+                q.push({i,k});
+                vis[i][k] =1;
 
-int dx[4] = {-1, 1, 0, 0};
-int dy[4] = {0, 0, -1, 1};
+                while(!q.empty()) {
+                    auto cur = q.front(); q.pop();
 
-void bfs(int i, int k) {
-    queue<pair<int, int>> q;
-    q.push({i, k});
-    vis[i][k] = true;
+                    for(int dir=0; dir<4; dir++) {
+                        int nx = cur.X + dx[dir];
+                        int ny = cur.Y + dy[dir];
 
-    while (!q.empty()) {
-        auto cur = q.front(); q.pop();
+                        if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue; // 경계 조건 추가
+                        if(mountain[nx][ny] && !vis[nx][ny]) {
+                            q.push({nx,ny});
+                            vis[nx][ny] =1;
+                        }
 
-        for (int dir = 0; dir < 4; dir++) {
-            int nx = cur.X + dx[dir];
-            int ny = cur.Y + dy[dir];
-
-            if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
-            if (mountain[nx][ny] > 0 && !vis[nx][ny]) {
-                q.push({nx, ny});
-                vis[nx][ny] = true;
-            }
-        }
-    }
-}
-
-void melting() {
-    memset(temp, 0, sizeof(temp)); // Initialize temp array with 0
-
-    for (int i = 0; i < n; i++) {
-        for (int k = 0; k < m; k++) {
-            if (mountain[i][k] > 0) {
-                int ice = 0;
-                for (int dir = 0; dir < 4; dir++) {
-                    int nx = i + dx[dir];
-                    int ny = k + dy[dir];
-                    if (nx >= 0 && nx < n && ny >= 0 && ny < m && mountain[nx][ny] == 0) {
-                        ice++;
                     }
                 }
-                temp[i][k] = max(0, mountain[i][k] - ice);
+                portion++;
+                if(portion>=2) return true;
             }
         }
     }
+    return false;
+}
+void melting() {
+    for(int i=0 ; i<n; i++) {
+        for(int k=0; k<m; k++) {
+            if(mountain[i][k]) {
+                //동서남북 체크하기
+                int ice=0;
+                for(int dir=0; dir<4; dir++) {
+                    int nx = i + dx[dir];
+                    int ny = k + dy[dir];
 
-    for (int i = 0; i < n; i++) {
-        for (int k = 0; k < m; k++) {
-            mountain[i][k] = temp[i][k];
+                    if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue; // 경계 조건 추가
+                    if(vis[nx][ny]==0)ice++;
+                }
+                temp[i][k] = max(0, mountain[i][k]-ice);
+            }
         }
+    }
+    for(int i=0; i<n; i++) {
+        for(int k=0; k<m; k++)mountain[i][k] = temp[i][k];
     }
 }
 
@@ -69,49 +72,57 @@ int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
-    cin >> n >> m;
+    cin >> n >>m;
 
-    vector<pair<int, int>> meltStore;
-    bool zeroMelt = false;
-    for (int i = 0; i < n; i++) {
-        for (int k = 0; k < m; k++) {
+    bool flag=false;
+
+    for(int i=0; i< n; i++) {
+        for(int k=0 ;k<m; k++) {
             cin >> mountain[i][k];
-            if (mountain[i][k] > 0) {
-                meltStore.push_back({i, k});
-                zeroMelt = true;
+
+            if(mountain[i][k]) {
+                flag = true;
+                vis[i][k]=1;
             }
         }
     }
 
-    if (!zeroMelt) {
-        cout << 0;
-        return 0;
+    if(!flag) {
+        cout << 0; return 0;
     }
 
-    while (true) {
+    while(true) {
         melting();
-        years++;
+        years++; //시간이 흘러서 녹아부림
 
-        // 덩어리 구하기
-        memset(vis, 0, sizeof(vis)); // Initialize vis array with 0
-        int portion = 0;
-        for (int i = 0; i < n; i++) {
-            for (int k = 0; k < m; k++) {
-                if (mountain[i][k] > 0 && !vis[i][k]) {
-                    bfs(i, k);
-                    portion++;
-                }
-            }
-        }
+        //bfs 수행을 위해서 vis 초기화 해주기
 
-        if (portion >= 2) {
+        fill(&vis[0][0], &vis[0][0] + 301 * 301, 0);  // vis 배열 초기화
+
+        portion=0;
+
+        if(bfs()) {
             cout << years;
             return 0;
         }
 
-        if (portion == 0) {
+        // 모든 빙산이 다 녹았는지 확인
+        bool allMelted = true;
+        for (int i = 0; i < n; i++) {
+            for (int k = 0; k < m; k++) {
+                if (mountain[i][k] > 0) {
+                    allMelted = false;
+                    break;
+                }
+            }
+            if (!allMelted) break;
+        }
+
+        if (allMelted) {
             cout << 0;
             return 0;
         }
+
     }
+
 }

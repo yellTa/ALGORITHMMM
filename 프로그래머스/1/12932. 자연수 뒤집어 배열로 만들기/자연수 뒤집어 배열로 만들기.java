@@ -1,17 +1,14 @@
+import java.util.*;
+
 class Solution {
-    public int[] solution(long n) {
-        int[] answer = new int[Long.toString(n).length()];
+    public ArrayList<Integer> solution(long n) {
+        ArrayList<Integer> answer  = new ArrayList<>();
+        String[] s = String.valueOf(n).split("");
         
-        int idx=0;
-        while(true){
-            answer[idx] = (int)(n%10);
-            n = n/10;
-            if(n==0)break;
-            idx ++;
-            
+        for(int i=s.length; i>=1; i--){
+            answer.add(Integer.parseInt(s[i-1]));
         }
-        
-        
+            
         
         return answer;
     }

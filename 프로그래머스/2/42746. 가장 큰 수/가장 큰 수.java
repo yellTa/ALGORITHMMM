@@ -10,10 +10,8 @@ class Solution {
         }
         
         Arrays.sort(arr, (a,b)->{
-            int A = Integer.parseInt(a+b);
-            int B = Integer.parseInt(b+a);
             //내림차순으로 정렬해야하니까
-            return Integer.compare(B,A);
+            return (b+a).compareTo(a+b);
         });
         
         for(int i=0; i<numbers.length ;i++){

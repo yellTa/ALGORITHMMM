@@ -1,34 +1,36 @@
 #include <iostream>
 #include <algorithm>
 #include <set>
+
 using namespace std;
 
 int n, m;
-int newN;
-int arr[10];
-int num[10];
-bool isused[10];
+int arr[20];
+int value[20];
+int isused[20];
 
-void func(int x) {
-    if(x==m) {
-        for(int i=0; i<m; i++) {
-            cout << arr[i] << " ";
-        }
+void func(int k) {
+    //k가 의미하는건 depth이다.
+    if (k == m) {
+        for (int i = 0; i < m; i++)cout << value[arr[i]] << " ";
         cout << "\n";
         return;
     }
 
-    int tmp=0;
-    for(int i=0; i<n; i++) {
-        if(!isused[i] && tmp !=num[i]) { //이전 수열의 마지막 항과 새로운 수열의
-            //마지막 항이 같으면 중복 수열
-            isused[i] = true;
-            arr[x] = num[i];
-            tmp = arr[x];// 마지막으로 저장된 값 저장
-            func(x+1);// 다음 작업 시작
-            isused[i] =false;
+    int st=0;
+    int temp=0;
+
+    for (int i = st; i < n; i++) {
+        if(!isused[i] && temp != value[i]) {
+            isused[i]=1;
+            arr[k] = i;
+            temp= value[arr[k]];
+            func(k + 1);
+            isused[i] =0;
         }
+
     }
+
 }
 
 int main() {
@@ -37,13 +39,11 @@ int main() {
 
     cin >> n >> m;
 
-    for(int i=0; i<n; i++) {
-        cin >> num[i];
+    for (int i = 0; i < n; i++) {
+        cin >> value[i];
     }
 
-    sort(num, num+n);
+    sort(value, value + n);
 
     func(0);
-
-
 }

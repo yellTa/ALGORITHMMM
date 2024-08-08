@@ -1,120 +1,101 @@
-import org.w3c.dom.Node;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
-
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
 
-    static int w=0;
-    static int h=0;
-    //홀수
-    static int []odx ={0,-1,0,1,1,1};
-    static int []ody={-1,0,1,1,0,-1};
+    private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static StringTokenizer st;
 
-    //짝수
-    static int[] edx={-1,-1,-1,0,1,0};
-    static int[]edy={-1,0,1,1,0,-1};
+    private static int w, h, answer;
+    private static int[][] map, visited;
 
-    static int[][] board = new int[110][110];
-
-    private static void outWall(int []arr){
-        Queue<int[]> q = new LinkedList<>();
-        q.add(arr);
-
-        //외벽 방문여부 check 배열
-        boolean[][] visited = new boolean[110][110];
-
-        visited[arr[0]][arr[1]] = true;
-
-        while(!q.isEmpty()){
-            int []cur = q.poll();
-
-            board[cur[0]][cur[1]] = 2;//외벽 2로 표시
-
-            for(int i=0; i<6; i++){
-                int nx = cur[0] + (cur[1]%2==0? edx[i] : odx[i]);
-                int ny = cur[1] + (cur[1]%2 ==0? edy[i]: ody[i]);
-
-                if(nx<1 || nx> w ||ny<1 || ny >h || visited[nx][ny] == true || board[nx][ny] ==1)continue;
-                q.add(new int[]{nx,ny});
-                visited[nx][ny]= true;
-            }
-        }
-
-    }
-
-    static int answer=0;
-    static boolean[][] visited = new boolean[110][110];
-    private static void countWall(int[] arr){
-        Queue<int []> q = new LinkedList<>();
-
-        q.add(arr);
-        visited[arr[0]][arr[1]] = true;
-
-        while(!q.isEmpty()){
-            int [] cur = q.poll();
-
-            for(int i=0; i<6; i++){
-                int nx = cur[0] + (cur[1]%2==0? edx[i] : odx[i]);
-                int ny = cur[1] + (cur[1]%2 ==0? edy[i] : ody[i]);
-
-                if(nx <1 || ny < 1 || nx>w || ny >h || board[nx][ny] ==2){
-                    answer++;
-                    //범위를 넘어선 곳의(그러니까 외곽이랑 붙은 쪽의 로직임)
-                    continue;
-                }
-                if(board[nx][ny] ==1 || visited[nx][ny] ==true)continue; //벽이니까 컨티뉴
-
-                visited[nx][ny] = true;
-                q.add(new int[]{nx,ny});
-
-            }
-        }
-    }
-
+    private static Queue<Pos> q = new LinkedList<>();
+    private static int[] dy = {-1, -1, 0, 1, 1, 0};
+    private static int[][] dx = {
+            {0, 1, 1, 1, 0, -1},
+            {-1, 0, 1, 0, -1, -1}
+    };
 
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        st = new StringTokenizer(br.readLine());
 
-        StringTokenizer st  = new StringTokenizer(br.readLine());
+        w = Integer.parseInt(st.nextToken());
+        h = Integer.parseInt(st.nextToken());
 
-            w = Integer.parseInt(st.nextToken());
-            h = Integer.parseInt(st.nextToken());
-
-        //보드 받기
-        for(int i=1; i<=h; i++){//열
+        visited = new int[h][w];
+        map = new int[h][w];
+        for (int y = 0; y < h; y++) {
             st = new StringTokenizer(br.readLine());
-            for(int k=1; k<=w; k++){//행
-                board[k][i] = Integer.parseInt(st.nextToken());
+            for (int x = 0; x < w; x++) {
+                map[y][x] = Integer.parseInt(st.nextToken());
             }
         }
 
-        //외부벽 카운트하기
-        for(int i=1; i<=h; i++){
-            for(int k=1; k<=w; k++){
-                if(board[k][i] == 0 && (i == 1 || k == 1 || i == h || k == w)){
-                    outWall(new int[]{k,i});
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                if (visited[y][x] == 1) {
+                    continue;
                 }
-            }
-        }
 
+                var home = map[y][x];
+                var in = true;
+                var borderTotal = 0;
 
-        //건물이랑 닿는 곳 체크하기
-        for(int i=1; i<=h; i++){
-            for(int k=1; k<=w; k++){
-                if(board[k][i] == 1)countWall(new int[]{k,i});
+                q.add(new Pos(y, x));
+                visited[y][x] = 1;
+
+                while (!q.isEmpty()) {
+                    Pos cur = q.poll();
+
+                    var border = 6;
+                    for (int dir = 0; dir < 6; dir++) {
+                        var ny = cur.y + dy[dir];
+                        var nx = cur.x + dx[cur.y % 2][dir];
+
+                        if (ny < 0 || ny >= h || nx < 0 || nx >= w) {
+                            in = false;
+                            continue;
+                        }
+                        if (map[ny][nx] != home) {
+                            continue;
+                        }
+                        if (visited[ny][nx] == 1) {
+                            border--;
+                            continue;
+                        }
+
+                        q.add(new Pos(ny, nx));
+                        visited[ny][nx] = 1;
+                        border --;
+                    }
+                    borderTotal += border;
+                }
+
+                if (home == 0 && in) {
+                    answer -= borderTotal;
+                    continue;
+                }
+
+                if (home == 1) {
+                    answer += borderTotal;
+                }
             }
         }
 
         System.out.println(answer);
-
-
     }
 
+    private static class Pos {
+        private int y;
+        private int x;
 
-
-
+        public Pos(int y, int x) {
+            this.y = y;
+            this.x = x;
+        }
+    }
 }

@@ -1,5 +1,4 @@
 
-
 import java.io.*;
 import java.util.*;
 
@@ -13,18 +12,15 @@ public class Main {
 
         String s = br.readLine();
 
-        LinkedList<Character> list = new LinkedList<Character>();
-        for(int i=0; i<s.length(); i++){
-            list.add(s.charAt(i));
-        }
-
 
         int tc = Integer.parseInt(br.readLine());
 
-        ListIterator<Character> iter = list.listIterator();
-        
-        while(iter.hasNext()){// iterator를 이용해서 마지막 커서 위치로 이동시킨다.
-            iter.next();
+        Stack<Character> left = new Stack<>();
+        Stack<Character> right = new Stack<>();
+
+        //값 세팅하기
+        for(int i=0 ;i< s.length(); i++){
+            left.push(s.charAt(i));
         }
 
         while(tc-- != 0 ){
@@ -32,29 +28,41 @@ public class Main {
             String command = st.nextToken();
 
             if(command.equals("L")){
-                if(iter.hasPrevious()) iter.previous(); //왼쪽으로 이동
+                //왼쪽으로 이동
+                // 왼쪽에서 빼서 오른쪽으로 넣어주기
+                if(!left.isEmpty()){
+                    right.push(left.pop());
+                }
 
             }else if(command.equals("D")){
-                if(iter.hasNext()) iter.next();//오른쪽으로 이동
+                //오른쪽으로 이동
+                //오른쪽에서 빼서 왼쪽에 넣어주기
+                if(!right.isEmpty()){
+                    left.push(right.pop());
+                }
 
             }else if(command.equals("B")){
-                if(iter.hasPrevious()){
-                    iter.previous(); //왼쪽으로 이동
-                    iter.remove(); //remove는 previous나 next로 반환된 가장 마지막 요소를 제거한다.
-                    //즉 remove하기 전에 iter을 움직여줘고 바로 삭제해야 원하는 값을 지운다는 뜻
-                }
+
+                //왼쪽 문자 삭제하기
+                if(!left.isEmpty())left.pop();
+
             }else if(command.equals("P")){
+                //삽입 - 왼쪽에 넣으면 된다.
                 char word = st.nextToken().charAt(0);
-                iter.add(word);
+                left.push(word);
             }
 
         }
+        //왼쪽에 있는 값을 모두 오른쪽에 옮긴 다음에 출력하면 됨
+        StringBuilder sb = new StringBuilder();
 
-        for(char c : list){
-            bw.write(Character.toString(c)) ;
-        }
+        while(!left.isEmpty())
+            right.push(left.pop());
 
-        bw.flush();;
+        while(!right.isEmpty())
+            bw.write(right.pop());
+
+        bw.flush();
         bw.close();
     }
 }

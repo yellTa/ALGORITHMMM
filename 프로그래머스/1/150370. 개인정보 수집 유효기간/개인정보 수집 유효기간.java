@@ -1,45 +1,70 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 
 class Solution {
-    public int[] solution(String today, String[] terms, String[] privacies) {
-        List<Integer> answer = new ArrayList<>();
-        Map<String, Integer> map = new HashMap<>();
+    static int[] terms = new int[30];
+    
+    private static int make(String[] todays, String[] date, String term){
 
-        // 오늘 날짜를 계산하여 변수에 저장
-        int checkDate = getDate(today);
-
-        // 날짜를 계산하기 위해 약관 종류와 기간을 맵에 저장
-        for (String s : terms) {
-            String[] term = s.split(" ");
-            map.put(term[0], Integer.parseInt(term[1]));
-        }
-
-        // 개인정보 배열 privacies를 순회하며 처리 완료된 개인정보의 인덱스를 찾아서 리스트에 추가
-        for (int i = 0; i < privacies.length; i++) {
-            String[] privacy = privacies[i].split(" ");
-
-            // 처리 완료일 계산(개인정보 처리 시작일 + 처리 기간 * 28일)
-            if (getDate(privacy[0]) + (map.get(privacy[1]) * 28) <= checkDate) {
-                answer.add(i + 1);
+        int year= Integer.parseInt(date[0]);
+        int month = Integer.parseInt(date[1]);
+        int days = Integer.parseInt(date[2]);
+        //약관을 월에 더하기
+        month = month + (terms[term.charAt(0)-'A']);
+        //하루 빼기
+        
+        
+        
+        //달이 넘어가는 경우
+        year += (month - 1) / 12;
+        month = (month - 1) % 12 + 1;
+        
+        //1일인 경우 28로 바꾸고 달에서 1개 빼주기 그럼 31일 30일 고려 안해도 됨
+        days--;
+        if(days==0){
+            days=28;
+            month--;
+            if(month==0){
+                year--;
+                month=12;
             }
         }
+        
+        System.out.println(year+ " "+ month + " "+ days);
+        
+        int toyear = Integer.parseInt(todays[0]);
+        int tomonth = Integer.parseInt(todays[1]);
+        int toda = Integer.parseInt(todays[2]);
+            
+        //오늘 날짜랑 비교하기        
+        if(year<toyear)return 1;//파기
+        if ( year==toyear &&month<tomonth)return 1;
+        if(year==toyear && month==tomonth&&days<toda)return 1;
 
-        // 리스트를 배열로 변환하여 반환
-        return answer.stream().mapToInt(i -> i).toArray();
+        return 0; //0이면 파기 x
     }
-
-    // 날짜를 입력받아 계산하여 정수값으로 반환하는 메서드
-    public static int getDate(String date) {
-        String[] arr = date.split("\\.");
-
-        int year = Integer.parseInt(arr[0]);
-        int month = Integer.parseInt(arr[1]);
-        int day = Integer.parseInt(arr[2]);
-
-        // 날짜를 연도 * 12 * 28 + 월 * 28 + 일 로 계산하여 반환
-        return (year * 12 * 28) + (month * 28) + day;
+    
+    public ArrayList<Integer> solution(String today, String[] t, String[] p) {
+        ArrayList<Integer> answer = new ArrayList<>();
+        
+        
+        //약관 배열만들기
+        for(int i=0; i<t.length; i++){
+            String[] temp = t[i].split(" ");
+            terms[temp[0].charAt(0) - 'A'] = Integer.parseInt(temp[1]);
+        }
+        
+        for(int i=0; i<p.length; i++){
+            String [] temp = p[i].split(" ");
+            String [] date =temp[0].split("\\.");
+            String term = temp[1];
+            String []todays = today.split("\\.");
+            
+            int x = make(todays, date, term);
+            if(x==1) answer.add(i+1);
+        }
+        
+        
+        return answer;
     }
 }

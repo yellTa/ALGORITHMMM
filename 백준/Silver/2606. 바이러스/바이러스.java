@@ -1,55 +1,58 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.sql.SQLOutput;
+import java.util.*;
 
-public class Main {
+class Main {
+    static int [] vis;
 
-	static boolean[] check;
-	static int[][] arr;
-	static int count = 0;
-	
-	static int node, line;
-	
-	static Queue<Integer> q = new LinkedList<>();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-	public static void main(String[] args) throws IOException {
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
-		
-		node = Integer.parseInt(br.readLine());
-		line = Integer.parseInt(br.readLine());
-	
-		arr = new int[node+1][node+1];
-		check = new boolean[node+1];
-		
-		for(int i = 0 ; i < line ; i ++) {
-			StringTokenizer str = new StringTokenizer(br.readLine());
-			
-			int a = Integer.parseInt(str.nextToken());
-			int b = Integer.parseInt(str.nextToken());
-			
-			arr[a][b] = arr[b][a] =  1;	
-		}
-		
-			dfs(1);
-			
-			System.out.println(count-1);
-		
-		}
-	public static void dfs(int start) {
-		
-		check[start] = true;
-		count++;
-		
-		for(int i = 0 ; i <= node ; i++) {
-			if(arr[start][i] == 1 && !check[i])
-				dfs(i);
-		}
-		
-	}
-	
+        int N = Integer.parseInt(br.readLine());
+
+        int V = Integer.parseInt(br.readLine());
+        vis= new int[N+1];
+
+
+        //인접 행렬
+        int[][] arr = new int[N+1][N+1];
+
+        StringTokenizer st;
+        //인접 리스트 활용 예정
+
+        for(int i=0; i<V; i++){
+            st = new StringTokenizer(br.readLine());
+
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+
+            //무방향 인접 행렬 생성
+            arr[x][y]=1;
+            arr[y][x]=1;
+        }
+
+        find(1, arr);
+
+        int answer=0;
+
+        for(int x : vis){
+            if(x==1){
+                answer++;
+            }
+        }
+        System.out.println(--answer);
+    }
+
+    private static void find(int start, int[][] arr){
+      vis[start]=1;
+
+      for(int i=0; i<arr.length;i++){
+          if(arr[start][i]==1 && vis[i]==0){//start번의 행과 연결된 노드가 있고 해당 노드가 검사를 안한 친구라면?
+              find(i,arr);
+          }
+      }
+    }
+
 }

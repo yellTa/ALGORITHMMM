@@ -1,62 +1,66 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.sql.SQLOutput;
+import java.util.*;
 
 class Main {
-    static boolean[] visited; // 방문 체크 배열
+    static int [] vis;
+    static ArrayList<Integer> store;
+    static int count;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int N = Integer.parseInt(br.readLine()); // 총 사람 수
-        int V = Integer.parseInt(br.readLine()); // 친구 관계 수
+        int N = Integer.parseInt(br.readLine());
 
-        int[][] adjMatrix = new int[N + 1][N + 1]; // 인접 행렬
-        visited = new boolean[N + 1]; // 방문 배열
+        int V = Integer.parseInt(br.readLine());
+        vis = new int[N+1];
+        store = new ArrayList<>();
 
-        // 친구 관계 입력
-        for (int i = 0; i < V; i++) {
+        int [][] arr = new int[N+1][N+1];
+
+        for(int i=0; i<V;i++){
             StringTokenizer st = new StringTokenizer(br.readLine());
+
             int x = Integer.parseInt(st.nextToken());
             int y = Integer.parseInt(st.nextToken());
 
-            adjMatrix[x][y] = 1;
-            adjMatrix[y][x] = 1; // 무방향 그래프이므로 대칭으로 설정
+            arr[x][y] =1;
+            arr[y][x]=1;
         }
+        count=0;
+        find(1,arr);
 
-        System.out.println(bfs(1, adjMatrix)); // BFS로 탐색하고 초대할 친구 수 출력
+//        for(int x : vis){
+//            System.out.print(x + " ");
+//        }
+        System.out.println(--count<0? 0 : count );
     }
 
-    private static int bfs(int start, int[][] adjMatrix) {
-        Queue<Integer> queue = new LinkedList<>();
-        queue.add(start);
-        visited[start] = true; // 상근이(1번) 방문 처리
 
-        int level = 0; // 현재 깊이 (1단계, 2단계를 나누기 위한 변수)
-        int count = 0; // 초대할 친구 수
+    private static void find(int start,int [][] arr){
+        Queue<Integer> q = new LinkedList<>();
+        q.add(start);
+        int depth=0;
+        while(!q.isEmpty() && depth<2){
 
-        // BFS 시작
-        while (!queue.isEmpty() && level < 2) { // 2단계까지만 탐색
-            int size = queue.size(); // 현재 레벨에서 탐색할 사람 수
-            level++;
+            int size = q.size();
+            depth++;
 
-            // 현재 레벨에서의 모든 친구를 탐색
-            for (int i = 0; i < size; i++) {
-                int current = queue.poll();
+            for(int i=0;i <size ;i++){
+                int cur = q.poll();
 
-                // 현재 사람의 모든 친구 탐색
-                for (int j = 1; j < adjMatrix.length; j++) {
-                    if (adjMatrix[current][j] == 1 && !visited[j]) {
-                        visited[j] = true; // 친구 방문 처리
-                        queue.add(j); // 친구의 친구를 큐에 추가
-                        count++; // 초대할 친구 수 증가
+                for(int k=1; k<arr.length; k++){
+                    if(arr[cur][k] ==1 && vis[k]==0){
+                        vis[k]=1;
+                        q.add(k);
+                        count++;
                     }
                 }
             }
         }
-        return count; // 초대할 친구 수 반환
+
     }
+
 }

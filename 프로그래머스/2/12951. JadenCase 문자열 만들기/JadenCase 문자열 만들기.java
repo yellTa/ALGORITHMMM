@@ -1,40 +1,35 @@
 class Solution {
+    //소문자 97~ 122
+    //대문자 65~ 90 A to Z
     public String solution(String s) {
+        String answer ="";
+        s = s.toLowerCase();
         
-        char[] array = s.toCharArray();
+        char[] c = s.toCharArray();
         
-        boolean flag= true;
-
-        //소문자 구하려면 32 더하고
-        //대문자는 32빼기
-        
-        //65이상90 이하 A Z
-        //97 122 a부터 z
-        
-        for(int i=0; i<s.length(); i++){
-            int x = array[i];
-            if(flag==true){
-               
-                if(x>=97 && x<=122){
-                    x = x-32; //대문자로 바꾸기 
-                }
-                flag =false;
-                
-                array[i]=(char)x;
-                
-            }else{
-                if(x>=65 && x<=90){
-                    x +=32;
-                    array[i]= (char)x;
-                }
-            }
-            
-            if(array[i]==' '){
-                flag = true;
-            }
-            
+        //첫글자를 대문자로
+        if(c[0]<=122 && c[0]>=97){
+            int x  =c[0];
+            x = x-32; //대문자로 바꿈
+            c[0] = (char)x;
         }
         
-        return new String(array);
+        //나머지 문자를 계산하기
+        boolean flag = false;
+        
+        for(int i=0; i< c.length; i++){
+            if(c[i] ==' '){
+                flag = true;
+            }else if(flag&& c[i]<=122 && c[i] >=97){//공백 다음 문자에 도달한 경우 
+                flag = false;
+                
+                int x  = c[i];
+                x =x-32;
+                c[i] =(char)x;
+            }else flag = false;
+        
+        }
+        
+        return new String(c);
     }
 }
